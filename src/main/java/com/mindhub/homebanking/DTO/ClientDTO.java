@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 public class ClientDTO {
     private Long id;
     private String firstName,lastName,email;
-    private Set<AccountDTO> accountDTOS;
+    private Set<AccountDTO> accounts;
 
     public ClientDTO( Client client) {
         this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
-        this.accountDTOS = accountDTOS(client.getAccounts());
+        this.accounts = accountDTOS(client.getAccounts());
     }
 
     public ClientDTO() {
@@ -41,7 +41,7 @@ public class ClientDTO {
         return email;
     }
 
-    public Set<AccountDTO> getAccountDTOS() {
-        return accountDTOS;
+    public Set<AccountDTO> getAccounts() {
+        return accounts;
     }
 }

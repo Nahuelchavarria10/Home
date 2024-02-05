@@ -31,10 +31,11 @@ public class ClientController {
         return new ResponseEntity<>(clients.stream().map(ClientDTO::new).collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDTO> getClientById(@PathVariable Long id){
+    public ResponseEntity<?> getClientById(@PathVariable("id") Long id){
         Client client = clientRepository.findById(id).orElse(null);
         if (client == null){
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+            String notFound = "client not found";
+            return new ResponseEntity<>(notFound,HttpStatus.NOT_FOUND);
         }
         else {
             ClientDTO clientDTO = new ClientDTO(client);

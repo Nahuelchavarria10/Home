@@ -2,21 +2,25 @@ package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.Transaction;
+import com.mindhub.homebanking.models.TransactionType;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.repositories.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class HomebankingApplication {
 
 	public static void main(String[] args) {SpringApplication.run(HomebankingApplication.class, args);}
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository){
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository){
 		return args -> {
 			Client melba = new Client("Melba","Morel","melba@mindhub.com");
 			Client messi = new Client("Lionel","Messi","messi@mindhub.com");
@@ -44,6 +48,15 @@ public class HomebankingApplication {
 			accountRepository.save(account3);
 			accountRepository.save(account6);
 			accountRepository.save(account5);
+			Transaction transactionLM1000 = new Transaction(TransactionType.CREDIT,1000.99,"Adidas", LocalDateTime.now());
+			Transaction transactionJPN004 = new Transaction(TransactionType.CREDIT,650.50,"Google", LocalDateTime.now());
+			Transaction transactionVIN001 = new Transaction(TransactionType.DEBIT,-400.50,"MercadoLibre", LocalDateTime.now());
+			account5.addTransaction(transactionLM1000);
+			account.addTransaction(transactionVIN001);
+			account4.addTransaction(transactionJPN004);
+			transactionRepository.save(transactionLM1000);
+			transactionRepository.save(transactionVIN001);
+			transactionRepository.save(transactionJPN004);
 		};
 	}
 }
