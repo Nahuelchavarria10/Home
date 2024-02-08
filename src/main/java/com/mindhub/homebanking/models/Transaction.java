@@ -17,6 +17,7 @@ public class Transaction {
     @JoinColumn(name = "account_id")
     private Account account;
 
+
     public Transaction() {
     }
 
@@ -26,6 +27,7 @@ public class Transaction {
         this.description = description;
         this.date = date;
     }
+
 
     public Long getId() {
         return id;

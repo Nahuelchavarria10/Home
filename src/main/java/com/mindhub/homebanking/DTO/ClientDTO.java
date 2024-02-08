@@ -24,9 +24,6 @@ public class ClientDTO {
         this.clientLoans = clientLoanDTOS(client.getClientLoans());
     }
 
-    public ClientDTO() {
-    }
-
     private Set<AccountDTO> accountDTOS(Set<Account> accounts) {
         return (Set<AccountDTO>) accounts.stream().map(AccountDTO::new).collect(Collectors.toSet());
     }

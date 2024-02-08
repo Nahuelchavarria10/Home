@@ -16,6 +16,7 @@ public class ClientLoan {
     @JoinColumn(name = "loan_id")
     private Loan loan;
 
+
     public ClientLoan() {
     }
 
@@ -23,6 +24,7 @@ public class ClientLoan {
         this.payments = payments;
         this.amount = amount;
     }
+    
 
     public Long getId() {
         return id;

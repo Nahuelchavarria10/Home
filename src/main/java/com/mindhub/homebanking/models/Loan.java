@@ -18,14 +18,16 @@ public class Loan {
     @OneToMany(mappedBy="loan", fetch=FetchType.EAGER)
     List<ClientLoan> clientLoans = new ArrayList<>();
 
+
+    public Loan() {
+    }
+
     public Loan(String name, double maxAmount, List<Integer> payments) {
         this.name = name;
         this.maxAmount = maxAmount;
         this.payments = payments;
     }
 
-    public Loan() {
-    }
 
     public void addClientLoan(ClientLoan clientLoan) {
         clientLoan.setLoan(this);

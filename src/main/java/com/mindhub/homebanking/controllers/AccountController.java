@@ -18,10 +18,6 @@ import java.util.List;
     public class AccountController {
         @Autowired
         private AccountRepository accountRepository;
-        @GetMapping("/hello")
-        public String getAccount(){
-            return "hello clients!";
-        }
         @GetMapping("/")
         public ResponseEntity<List<AccountDTO>> getAllAccounts(){
             List<Account> accounts= accountRepository.findAll();

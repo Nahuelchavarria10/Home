@@ -16,6 +16,7 @@ public class Client {
     @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
     Set<ClientLoan> clientLoans = new HashSet<>();
 
+
     public Client() {
     }
 
@@ -24,6 +25,7 @@ public class Client {
         this.lastName = lastName;
         this.email = email;
     }
+
 
     public void addAccount(Account account) {
         account.setClient(this);

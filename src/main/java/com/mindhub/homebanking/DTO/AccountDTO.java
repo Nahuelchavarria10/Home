@@ -23,9 +23,6 @@ public class AccountDTO {
         this.transactions = transactionDTOS(account.getTransactions());
     }
 
-    public AccountDTO() {
-    }
-
     private Set<TransactionDTO> transactionDTOS(Set<Transaction> transactions) {
         return (Set<TransactionDTO>) transactions.stream().map(TransactionDTO::new).collect(Collectors.toSet());
     }
