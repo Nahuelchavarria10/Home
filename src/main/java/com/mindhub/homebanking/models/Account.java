@@ -24,13 +24,17 @@ public class Account {
     @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
     private Set<Transaction> transactions = new HashSet<>();
 
+    public Account() {
+    }
     public Account(String number, LocalDate creationDate, double balance) {
         this.number = number;
         this.creationDate = creationDate;
         this.balance = balance;
     }
 
-    public Account() {
+    public void addTransaction(Transaction transaction) {
+        transaction.setAccount(this);
+        transactions.add(transaction);
     }
 
     public String getNumber() {
@@ -69,8 +73,4 @@ public class Account {
         return transactions;
     }
 
-    public void addTransaction(Transaction transaction) {
-        transaction.setAccount(this);
-        transactions.add(transaction);
-    }
 }

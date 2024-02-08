@@ -23,12 +23,12 @@ import java.util.List;
             return "hello clients!";
         }
         @GetMapping("/")
-        public ResponseEntity<List<AccountDTO>> getAllClients(){
+        public ResponseEntity<List<AccountDTO>> getAllAccounts(){
             List<Account> accounts= accountRepository.findAll();
             return new ResponseEntity<>(accounts.stream().map(AccountDTO::new).collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
         }
         @GetMapping("/{id}")
-        public ResponseEntity<?> getClientById(@PathVariable("id") Long id){
+        public ResponseEntity<?> getAccountById(@PathVariable("id") Long id){
             Account account = accountRepository.findById(id).orElse(null);
             if (account == null){
                 String notFound = "account not found";

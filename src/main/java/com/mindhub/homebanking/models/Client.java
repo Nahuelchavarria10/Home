@@ -10,10 +10,14 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String firstName,lastName,email;
     @OneToMany(mappedBy = "client",fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
+    @OneToMany(mappedBy="client", fetch=FetchType.EAGER)
+    Set<ClientLoan> clientLoans = new HashSet<>();
+
+    public Client() {
+    }
 
     public Client(String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -21,7 +25,14 @@ public class Client {
         this.email = email;
     }
 
-    public Client() {
+    public void addAccount(Account account) {
+        account.setClient(this);
+        accounts.add(account);
+    }
+
+    public void addClientLoan(ClientLoan clientLoan) {
+        clientLoan.setClient(this);
+        clientLoans.add(clientLoan);
     }
 
     public Long getId() {
@@ -56,18 +67,16 @@ public class Client {
         return accounts;
     }
 
-    public void addAccount(Account account) {
-        account.setClient(this);
-        accounts.add(account);
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
     }
 
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public Set<ClientLoan> getClientLoans() {
+        return clientLoans;
     }
+
+    public void setClientLoans(Set<ClientLoan> clientLoans) {
+        this.clientLoans = clientLoans;
+    }
+
 }
