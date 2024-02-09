@@ -14,22 +14,18 @@ public class ClientDTO {
     private String firstName,lastName,email;
     private Set<AccountDTO> accounts;
     private Set<ClientLoanDTO> clientLoans;
+    private Set<CardDTO> cards;
 
     public ClientDTO( Client client) {
         this.id = client.getId();
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
-        this.accounts = accountDTOS(client.getAccounts());
-        this.clientLoans = clientLoanDTOS(client.getClientLoans());
+        this.accounts = client.getAccounts().stream().map(account -> new AccountDTO(account)).collect(Collectors.toSet());
+        this.clientLoans = client.getClientLoans().stream().map(clientLoan -> new ClientLoanDTO(clientLoan)).collect(Collectors.toSet());
+        this.cards = client.getCards().stream().map(card -> new CardDTO(card)).collect(Collectors.toSet());
     }
 
-    private Set<AccountDTO> accountDTOS(Set<Account> accounts) {
-        return (Set<AccountDTO>) accounts.stream().map(AccountDTO::new).collect(Collectors.toSet());
-    }
-    private Set<ClientLoanDTO> clientLoanDTOS(Set<ClientLoan> clientLoans) {
-        return (Set<ClientLoanDTO>) clientLoans.stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
-    }
 
     public Long getId() {
         return id;
@@ -51,7 +47,11 @@ public class ClientDTO {
         return accounts;
     }
 
-    public Set<ClientLoanDTO> getClientLoan() {
+    public Set<ClientLoanDTO> getLoans() {
         return clientLoans;
+    } // I renamed the "getClientLoan" method to "getLoans"
+
+    public Set<CardDTO> getCards() {
+        return cards;
     }
 }

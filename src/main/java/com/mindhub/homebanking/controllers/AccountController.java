@@ -21,7 +21,9 @@ import java.util.List;
         @GetMapping("/")
         public ResponseEntity<List<AccountDTO>> getAllAccounts(){
             List<Account> accounts= accountRepository.findAll();
-            return new ResponseEntity<>(accounts.stream().map(AccountDTO::new).collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
+            return new ResponseEntity<>(accounts.stream()
+                    .map(account -> new AccountDTO(account))
+                    .collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
         }
         @GetMapping("/{id}")
         public ResponseEntity<?> getAccountById(@PathVariable("id") Long id){
