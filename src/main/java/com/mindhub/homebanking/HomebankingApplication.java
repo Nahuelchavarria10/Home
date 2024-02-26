@@ -2,10 +2,12 @@ package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,33 +15,38 @@ import java.util.List;
 
 @SpringBootApplication
 public class HomebankingApplication {
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {SpringApplication.run(HomebankingApplication.class, args);}
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository,CardRepository cardRepository){
 		return args -> {
-			Client melba = new Client("Melba","Morel","melba@mindhub.com");
-			Client messi = new Client("Lionel","Messi","messi@mindhub.com");
-			Client cristiano = new Client("Cristiano","Ronaldo","cristiano@mindhub.com");
-			Client juan = new Client("juan","Perez","juan@mindhub.com");
+			Client melba = new Client("Melba","Morel","melba@mindhub.com", passwordEncoder.encode("melba123"));
+			Client messi = new Client("Lionel","Messi","messi@mindhub.com", passwordEncoder.encode("messi1210"));
+			Client cristiano = new Client("Cristiano","Ronaldo","cristiano@mindhub.com", passwordEncoder.encode("cr127"));
+			Client juan = new Client("juan","Perez","juan@mindhub.com", passwordEncoder.encode("juan123"));
 			clientRepository.save(melba);
 			clientRepository.save(messi);
 			clientRepository.save(cristiano);
 			clientRepository.save(juan);
 			Account account1 = new Account("VIN001",LocalDate.now(),5000);
 			Account account2 = new Account("VIN002",LocalDate.now(),7500);
+			Account account7 = new Account("VIN003",LocalDate.now(),500);
 			Account account3 = new Account("CR7000",LocalDate.now(),9000);
 			Account account4 = new Account("JPN004",LocalDate.now(),4500);
 			Account account5 = new Account("LM1000",LocalDate.now(),10000);
 			Account account6 = new Account("CR7002",LocalDate.now(),3500);
 			melba.addAccount(account1);
 			melba.addAccount(account2);
+			melba.addAccount(account7);
 			cristiano.addAccount(account3);
 			cristiano.addAccount(account6);
 			juan.addAccount(account4);
 			messi.addAccount(account5);
 			accountRepository.save(account1);
 			accountRepository.save(account2);
+			accountRepository.save(account7);
 			accountRepository.save(account4);
 			accountRepository.save(account3);
 			accountRepository.save(account6);
