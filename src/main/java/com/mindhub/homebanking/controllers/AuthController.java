@@ -2,7 +2,9 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.DTO.LoginDTO;
 import com.mindhub.homebanking.DTO.RegisterDTO;
+import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.services.JwtUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,6 +33,10 @@ public class AuthController {
     private ClientRepository clientRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
         try {
@@ -56,8 +64,11 @@ public class AuthController {
 
             Client client = new Client(registerDTO.firstName(), registerDTO.lastName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()));
 
-            clientRepository.save(client);
+            Account account = new Account("VIN-" + jwtUtilService.getRandomNumber(0,99999999) , LocalDate.now(),0);
 
+            client.addAccount(account);
+            clientRepository.save(client);
+            accountRepository.save(account);
 
             return new ResponseEntity<>("created",HttpStatus.CREATED);
         }catch (Exception e){
@@ -70,4 +81,5 @@ public class AuthController {
 
         return ResponseEntity.ok("HOLA "+ mail);
     }
+
 }
