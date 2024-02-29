@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.services.JwtUtilService;
+import com.mindhub.homebanking.services.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ public class AuthController {
     private UserDetailsService userDetailsService;
     @Autowired
     private JwtUtilService jwtUtilService;
+    @Autowired
+    private UtilService utilService;
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -64,7 +67,7 @@ public class AuthController {
 
             Client client = new Client(registerDTO.firstName(), registerDTO.lastName(), registerDTO.email(), passwordEncoder.encode(registerDTO.password()));
 
-            Account account = new Account("VIN-" + jwtUtilService.getRandomNumber(0,99999999) , LocalDate.now(),0);
+            Account account = new Account("VIN-" + utilService.getRandomNumber(100,99999999) , LocalDate.now(),0);
 
             client.addAccount(account);
             clientRepository.save(client);
@@ -77,9 +80,9 @@ public class AuthController {
     }
     @GetMapping("/test")
     public ResponseEntity<?> test(){
-        var mail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String mail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        return ResponseEntity.ok("HOLA "+ mail);
+        return ResponseEntity.ok("Hola "+ mail);
     }
 
 }

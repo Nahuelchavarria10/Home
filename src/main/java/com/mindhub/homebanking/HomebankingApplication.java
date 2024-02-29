@@ -79,11 +79,11 @@ public class HomebankingApplication {
 			clientLoanRepository.save(clientLoan2);
 			clientLoanRepository.save(clientLoan3);
 			//Card card1 = new Card(melba,CardType.DEBIT,ColorCardType.GOLD,"4517-3063-2410-7005",432,LocalDate.now(),LocalDate.now().plusYears(5));
-			Card card2 = new Card(melba,CardType.CREDIT,ColorCardType.TITANIUM,"5247-0278-1807-1719",520,LocalDate.now(),LocalDate.now().plusYears(5));
-			Card card3 = new Card(juan,CardType.CREDIT,ColorCardType.SILVER,"5191-8974-7566-9537",890,LocalDate.now(),LocalDate.now().plusYears(5));
-			Card card4 = new Card(juan,CardType.DEBIT,ColorCardType.GOLD,"4191-8936-8375-8642",144,LocalDate.now(),LocalDate.now().plusYears(5));
-			Card card5 = new Card(cristiano,CardType.CREDIT,ColorCardType.TITANIUM,"5505-8981-7202-5171",907,LocalDate.of(2021,2,5),LocalDate.now().plusYears(7));
-			Card card6 = new Card(messi,CardType.CREDIT,ColorCardType.TITANIUM,"5547-8942-5549-4178",310,LocalDate.of(2022,6,24),LocalDate.now().plusYears(10));
+			Card card2 = new Card(melba,CardType.CREDIT, CardColor.TITANIUM,"5247-0278-1807-1719",520,LocalDate.now(),LocalDate.now().plusYears(5));
+			Card card3 = new Card(juan,CardType.CREDIT, CardColor.SILVER,"5191-8974-7566-9537",890,LocalDate.now(),LocalDate.now().plusYears(5));
+			Card card4 = new Card(juan,CardType.DEBIT, CardColor.GOLD,"4191-8936-8375-8642",144,LocalDate.now(),LocalDate.now().plusYears(5));
+			Card card5 = new Card(cristiano,CardType.CREDIT, CardColor.TITANIUM,"5505-8981-7202-5171",907,LocalDate.of(2021,2,5),LocalDate.now().plusYears(7));
+			Card card6 = new Card(messi,CardType.CREDIT, CardColor.TITANIUM,"5547-8942-5549-4178",310,LocalDate.of(2022,6,24),LocalDate.now().plusYears(10));
 			//melba.addCard(card1);
 			melba.addCard(card2);
 			juan.addCard(card3);

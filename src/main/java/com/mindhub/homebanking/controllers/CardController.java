@@ -6,8 +6,7 @@ import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.CardRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.services.JwtUtilService;
-import io.micrometer.common.util.StringUtils;
+import com.mindhub.homebanking.services.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class CardController {
     private ClientRepository clientRepository;
 
     @Autowired
-    private JwtUtilService jwtUtilService;
+    private UtilService utilService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -61,26 +60,31 @@ public class CardController {
             String userMail = SecurityContextHolder.getContext().getAuthentication().getName();
             Client client = clientRepository.findByEmail(userMail);
 
-            if (cardApplyDTO.colorCardType().isBlank()) {
+            if (cardApplyDTO.cardColor().isBlank()) {
                 return ResponseEntity.status(400).body("color is required");
             }
             if (cardApplyDTO.cardType().isBlank()) {
                 return ResponseEntity.status(400).body("type is required");
             }
 
-            if (isMaxCard(client)) {
-                return ResponseEntity.status(400).body("error el cliente no puede tener mas de 3 tarjetas");
+            if (cardRepository.countByTypeAndClient(CardType.valueOf(cardApplyDTO.cardType()), client) == 3) {
+                return ResponseEntity.status(403).body("Customer already has 3 cards of this type. Maximum limit reached.");
             }
 
-            String numberCardRandom = jwtUtilService.getRandomNumber(1000,9999) + "-" + jwtUtilService.getRandomNumber(1000,9999) + "-" + jwtUtilService.getRandomNumber(1000,9999) + "-" + jwtUtilService.getRandomNumber(1000,9999);
-            int cvvRandom = jwtUtilService.getRandomNumber(100,999);
-            Card card = new Card(client,CardType.valueOf(cardApplyDTO.cardType()),ColorCardType.valueOf(cardApplyDTO.colorCardType()),numberCardRandom,cvvRandom,LocalDate.now(),LocalDate.now().plusYears(5));
+            if (cardRepository.existsCardByColorAndTypeAndClient(CardColor.valueOf(cardApplyDTO.cardColor()),CardType.valueOf(cardApplyDTO.cardType()), client)) {
+                return ResponseEntity.status(403).body("Customer already has a card with this color and type combination.");
+            }
+
+            String cardNumberRandom = utilService.getRandomNumber(1000,9999) + "-" + utilService.getRandomNumber(1000,9999) + "-" + utilService.getRandomNumber(1000,9999) + "-" + utilService.getRandomNumber(1000,9999);
+            int cvvRandom = utilService.getRandomNumber(100,999);
+
+            Card card = new Card(client,CardType.valueOf(cardApplyDTO.cardType()), CardColor.valueOf(cardApplyDTO.cardColor()),cardNumberRandom,cvvRandom,LocalDate.now(),LocalDate.now().plusYears(5));
             client.addCard(card);
             cardRepository.save(card);
 
-            return ResponseEntity.status(201).body("card creada");
+            return ResponseEntity.status(201).body("card created successfully");
         }catch (Exception e){
-            return new ResponseEntity<>("datos incorrectos pa", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error processing the request.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -92,11 +96,6 @@ public class CardController {
         Set<Card> cards = client.getCards();
 
         return new ResponseEntity<>(cards.stream().map(CardDTO::new).collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
-    }
-
-    private boolean isMaxCard(Client client) {
-        int cantidadDeCard = client.getCards().size();
-        return cantidadDeCard >= 3;
     }
 
 }

@@ -11,7 +11,7 @@ public class Card {
     private Long id;
     private String cardHolder;
     private CardType type;
-    private ColorCardType color;
+    private CardColor color;
     private String number;
     private int cvv;
     private LocalDate formDate;
@@ -24,7 +24,7 @@ public class Card {
     public Card() {
     }
 
-    public Card(Client client, CardType type, ColorCardType color, String number, int cvv, LocalDate formDate, LocalDate thruDate) {
+    public Card(Client client, CardType type, CardColor color, String number, int cvv, LocalDate formDate, LocalDate thruDate) {
         this.cardHolder = client.getFirstName() + " " + client.getLastName();
         this.type = type;
         this.color = color;
@@ -55,11 +55,11 @@ public class Card {
         this.type = type;
     }
 
-    public ColorCardType getColor() {
+    public CardColor getColor() {
         return color;
     }
 
-    public void setColor(ColorCardType color) {
+    public void setColor(CardColor color) {
         this.color = color;
     }
 

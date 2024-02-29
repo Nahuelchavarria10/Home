@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.services.JwtUtilService;
+import com.mindhub.homebanking.services.UtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,10 @@ import java.util.Set;
 public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
-
     @Autowired
     private JwtUtilService jwtUtilService;
+    @Autowired
+    private UtilService utilService;
     @Autowired
     private ClientRepository clientRepository;
 
@@ -57,17 +59,19 @@ public class AccountController {
             String userMail = SecurityContextHolder.getContext().getAuthentication().getName();
             Client client = clientRepository.findByEmail(userMail);
 
-            if (clienteTieneMasDeTresCuentas(client)) {
-                return ResponseEntity.status(400).body("error el cliente no puede tener mas de 3 cuentas");
+            if (client.getAccounts().size() >= 3) {
+                return ResponseEntity.status(403).body("the customer has reached the maximum number of 3 accounts created");
             }
 
-            Account account = new Account("VIN-" + jwtUtilService.getRandomNumber(0,99999999) , LocalDate.now(),0);
+            int accountNumberRandom = utilService.getRandomNumber(100,99999999);
+
+            Account account = new Account("VIN-" + accountNumberRandom , LocalDate.now(),0);
             client.addAccount(account);
             accountRepository.save(account);
 
-            return ResponseEntity.ok("Cuenta creada exitosamente");
+            return ResponseEntity.status(201).body("Account successfully created");
         }catch (Exception e){
-            return new ResponseEntity<>("datos incorrectos pa", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error processing the request.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -79,11 +83,6 @@ public class AccountController {
         Set<Account> accounts = client.getAccounts();
 
         return new ResponseEntity<>(accounts.stream().map(AccountDTO::new).collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
-    }
-
-    private boolean clienteTieneMasDeTresCuentas(Client client) {
-        int cantidadDeCuentas = client.getAccounts().size();
-        return cantidadDeCuentas >= 3;
     }
 
 }
