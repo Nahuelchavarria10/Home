@@ -67,7 +67,7 @@ public class CardController {
                 return ResponseEntity.status(400).body("type is required");
             }
 
-            if (cardRepository.countByTypeAndClient(CardType.valueOf(cardApplyDTO.cardType()), client) == 3) {
+            if (cardRepository.countByTypeAndClient(CardType.valueOf(cardApplyDTO.cardType()), client) >= 3) {
                 return ResponseEntity.status(403).body("Customer already has 3 cards of this type. Maximum limit reached.");
             }
 

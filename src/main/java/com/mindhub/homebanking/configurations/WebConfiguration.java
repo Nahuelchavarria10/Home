@@ -25,13 +25,12 @@ public class WebConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .authorizeHttpRequests(authorize ->
-                        authorize
+                .authorizeHttpRequests(authorize -> authorize  //de esta funcion configuramos el acceso a las rutas que coincidan (matcheen)
                                 .requestMatchers("/api/auth/login", "/api/auth/register","/h2-console/**").permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().authenticated() //
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // manejo de sesiones sin estado
         return httpSecurity.build();
     }
     @Bean

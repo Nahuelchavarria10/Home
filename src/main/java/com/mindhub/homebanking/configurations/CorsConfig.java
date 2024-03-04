@@ -13,8 +13,8 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost/5173", "http://localhost/3000"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost/5173", "http://localhost/3000")); //permito las rutas que esten abiertas
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE")); // permito todos los metodos
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;

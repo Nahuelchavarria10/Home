@@ -58,7 +58,7 @@ public class AuthController {
         try {
 
             if (registerDTO.firstName().isBlank() || registerDTO.lastName().isBlank() || registerDTO.email().isBlank() || registerDTO.password().isBlank()){
-                return ResponseEntity.status(400).body("name is required");
+                return ResponseEntity.status(400).body("All fields is required");
             }
 
             if (clientRepository.findByEmail(registerDTO.email()) != null) {

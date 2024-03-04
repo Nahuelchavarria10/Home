@@ -27,7 +27,7 @@ public class TransactionController {
 
     @Transactional
     @PostMapping("/")
-    public ResponseEntity<?> applyCard ( @RequestBody TransactionApplyDTO transactionApplyDTO){
+    public ResponseEntity<?> applyTransaction ( @RequestBody TransactionApplyDTO transactionApplyDTO){
 
         try {
             String userMail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -54,9 +54,6 @@ public class TransactionController {
             }
             if (!accountRepository.existsAccountByNumberAndClient(transactionApplyDTO.accountOrigin(),client)) {
                 return ResponseEntity.status(403).body("account does not belong to the authenticated customer");
-            }
-            if (!accountRepository.existsAccountByNumber(transactionApplyDTO.AccountDestination())) {
-                return ResponseEntity.status(403).body("the recipient's account does not exist");
             }
             if (!accountRepository.existsAccountByNumber(transactionApplyDTO.AccountDestination())) {
                 return ResponseEntity.status(403).body("the recipient's account does not exist");
@@ -91,6 +88,8 @@ public class TransactionController {
             double credit = accountDestination.getBalance() + transactionApplyDTO.amount();
             accountDestination.setBalance(credit);
 
+            accountRepository.save(accountOrigin);
+            accountRepository.save(accountDestination);
             transactionRepository.save(transactionOrigin);
             transactionRepository.save(transactionDestination);
 
