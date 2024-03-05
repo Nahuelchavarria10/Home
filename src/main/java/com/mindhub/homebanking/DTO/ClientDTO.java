@@ -12,7 +12,7 @@ public class ClientDTO {
     private String firstName,lastName,email;
     private Set<AccountDTO> accounts;
     private Set<CardDTO> cards;
-    private Set<ClientLoanDTO> Loans;
+    private Set<ClientLoanDTO> loans;
 
 
     public ClientDTO( Client client) {
@@ -22,7 +22,7 @@ public class ClientDTO {
         this.email = client.getEmail();
         this.accounts = client.getAccounts().stream().map(account -> new AccountDTO(account)).collect(Collectors.toSet());
         this.cards = client.getCards().stream().map(card -> new CardDTO(card)).collect(Collectors.toSet());
-        this.Loans = client.getClientLoans().stream().map(clientLoan -> new ClientLoanDTO(clientLoan)).collect(Collectors.toSet());
+        this.loans = client.getClientLoans().stream().map(clientLoan -> new ClientLoanDTO(clientLoan)).collect(Collectors.toSet());
 
     }
 
@@ -47,12 +47,8 @@ public class ClientDTO {
         return accounts;
     }
 
-    public Set<CardDTO> getCards() {
-        return cards;
-    }
+    public Set<CardDTO> getCards() { return cards; }
 
-    public Set<ClientLoanDTO> getLoans() {
-        return Loans;
-    } // I renamed the "getClientLoan" method to "getLoans"
+    public Set<ClientLoanDTO> getLoans() { return loans; } // I renamed the "getClientLoan" method to "getLoans"
 
 }
