@@ -6,8 +6,10 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.services.JwtUtilService;
-import com.mindhub.homebanking.services.UtilService;
+import com.mindhub.homebanking.securityServices.JwtUtilService;
+import com.mindhub.homebanking.securityServices.UtilService;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +35,12 @@ public class AuthController {
     @Autowired
     private UtilService utilService;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
@@ -61,7 +63,7 @@ public class AuthController {
                 return ResponseEntity.status(400).body("All fields is required");
             }
 
-            if (clientRepository.findByEmail(registerDTO.email()) != null) {
+            if (clientService.getClientByEmail(registerDTO.email()) != null) {
                 return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
             }
 
@@ -70,8 +72,8 @@ public class AuthController {
             Account account = new Account("VIN-" + utilService.getRandomNumber(100,99999999) , LocalDate.now(),0);
 
             client.addAccount(account);
-            clientRepository.save(client);
-            accountRepository.save(account);
+            clientService.saveClient(client);
+            accountService.saveAccount(account);
 
             return new ResponseEntity<>("created",HttpStatus.CREATED);
         }catch (Exception e){

@@ -4,6 +4,7 @@ import com.mindhub.homebanking.DTO.LoanApplicationDTO;
 import com.mindhub.homebanking.DTO.LoanDTO;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import com.mindhub.homebanking.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,21 +19,21 @@ import java.util.List;
 @RequestMapping("/api/loans")
 public class LoanController {
     @Autowired
-    private LoanRepository loanRepository;
+    private LoanService loanService;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @Autowired
-    private ClientLoanRepository clientLoanRepository;
+    private ClientLoanService clientLoanService;
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
 
     @GetMapping("/")
     public ResponseEntity<List<LoanDTO>> getAllLoans() {
-        List<Loan> loans = loanRepository.findAll();
+        List<Loan> loans = loanService.getAllLoans();
         return new ResponseEntity<>(loans.stream()
                 .map(loan -> new LoanDTO(loan))
                 .collect(java.util.stream.Collectors.toList()), HttpStatus.OK);
@@ -40,7 +41,7 @@ public class LoanController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getLoanById(@PathVariable("id") Long id) {
-        Loan loan = loanRepository.findById(id).orElse(null);
+        Loan loan = loanService.getLoanById(id);
         if (loan == null) {
             String notFound = "loan not found";
             return new ResponseEntity<>(notFound, HttpStatus.NOT_FOUND);
@@ -54,7 +55,7 @@ public class LoanController {
     public ResponseEntity<?> applyLoan(@RequestBody LoanApplicationDTO loanApplicationDTO) {
         try {
             String userMail = SecurityContextHolder.getContext().getAuthentication().getName();
-            Client client = clientRepository.findByEmail(userMail);
+            Client client = clientService.getClientByEmail(userMail);
 
             if (client == null) {
                 return ResponseEntity.status(403).body("client not found");
@@ -74,18 +75,21 @@ public class LoanController {
             if (loanApplicationDTO.payments() == null || loanApplicationDTO.payments() <= 0) {
                 return ResponseEntity.status(403).body("The number of payments cannot be null or less than 0.");
             }
-            if (!accountRepository.existsAccountByNumberAndClient(loanApplicationDTO.AccountDestination(),client)) {
+            if (!accountService.existsAccountByNumberAndClient(loanApplicationDTO.AccountDestination(),client)) {
                 return ResponseEntity.status(403).body("account does not exist or does not belong to the authenticated customer.");
             }
+            if (clientLoanService.existsClientLoanByClientAndLoan(client, loanService.getLoanById(loanApplicationDTO.id()))) {
+                return ResponseEntity.status(403).body("the customer has already applied for this loan");
+            }
 
-            Account accountDestination = accountRepository.findByNumber(loanApplicationDTO.AccountDestination());
+            Account accountDestination = accountService.findByNumber(loanApplicationDTO.AccountDestination());
 
             double additional = loanApplicationDTO.amount() * 0.2;
             double creditAmount = accountDestination.getBalance() + loanApplicationDTO.amount();
-            
+
             //if Loan Mortgage
             if (loanApplicationDTO.id() == 1) {
-                Loan mortgage = loanRepository.findById(loanApplicationDTO.id()).orElse(null);
+                Loan mortgage = loanService.getLoanById(loanApplicationDTO.id());
                 if (mortgage == null) {
                     return ResponseEntity.status(403).body("loan not found");
                 }
@@ -109,16 +113,16 @@ public class LoanController {
                 accountDestination.addTransaction(transactionDestination);
                 accountDestination.setBalance(creditAmount);
 
-                //loanRepository.save(mortgage);
+                loanService.saveLoan(mortgage);
 
-                accountRepository.save(accountDestination);
-                clientLoanRepository.save(clientLoan1);
-                transactionRepository.save(transactionDestination);
+                accountService.saveAccount(accountDestination);
+                clientLoanService.saveClientLoan(clientLoan1);
+                transactionService.saveTransaction(transactionDestination);
             }
-            
+
             //if Loan Personal
             if (loanApplicationDTO.id() == 2) {
-                Loan personal = loanRepository.findById(loanApplicationDTO.id()).orElse(null);
+                Loan personal = loanService.getLoanById(loanApplicationDTO.id());
                 if (personal == null) {
                     return ResponseEntity.status(403).body("loan not found");
                 }
@@ -142,16 +146,16 @@ public class LoanController {
                 accountDestination.addTransaction(transactionDestination);
                 accountDestination.setBalance(creditAmount);
 
-                //loanRepository.save(personal);
+                //loanService.saveLoan(personal);
 
-                accountRepository.save(accountDestination);
-                clientLoanRepository.save(clientLoan2);
-                transactionRepository.save(transactionDestination);
+                accountService.saveAccount(accountDestination);
+                clientLoanService.saveClientLoan(clientLoan2);
+                transactionService.saveTransaction(transactionDestination);
             }
 
             // if Loan Automotive
             if (loanApplicationDTO.id() == 3){
-                Loan automotive = loanRepository.findById(loanApplicationDTO.id()).orElse(null);
+                Loan automotive = loanService.getLoanById(loanApplicationDTO.id());
                 if (automotive == null) {
                     return ResponseEntity.status(403).body("loan not found");
                 }
@@ -175,11 +179,11 @@ public class LoanController {
                 accountDestination.addTransaction(transactionDestination);
                 accountDestination.setBalance(creditAmount);
 
-                //loanRepository.save(automotive);
+                //loanService.saveLoan(automotive);
 
-                accountRepository.save(accountDestination);
-                clientLoanRepository.save(clientLoan3);
-                transactionRepository.save(transactionDestination);
+                accountService.saveAccount(accountDestination);
+                clientLoanService.saveClientLoan(clientLoan3);
+                transactionService.saveTransaction(transactionDestination);
             }
 
             return ResponseEntity.status(201).body("loan applied successfully");

@@ -1,4 +1,4 @@
-package com.mindhub.homebanking.services;
+package com.mindhub.homebanking.securityServices;
 
 import org.springframework.stereotype.Service;
 

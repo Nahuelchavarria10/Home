@@ -6,7 +6,9 @@ import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.CardRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.services.UtilService;
+import com.mindhub.homebanking.securityServices.UtilService;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +25,11 @@ public class CardController {
     @Autowired
     private CardRepository cardRepository;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @Autowired
     private UtilService utilService;
 
-    @Autowired
-    private AccountRepository accountRepository;
 
     @GetMapping("/")
     public ResponseEntity<List<CardDTO>> getAllCards(){
@@ -58,7 +58,7 @@ public class CardController {
 
         try {
             String userMail = SecurityContextHolder.getContext().getAuthentication().getName();
-            Client client = clientRepository.findByEmail(userMail);
+            Client client = clientService.getClientByEmail(userMail);
 
             if (cardApplyDTO.cardColor().isBlank()) {
                 return ResponseEntity.status(400).body("color is required");
@@ -91,7 +91,7 @@ public class CardController {
     @GetMapping("/current/cards")
     public ResponseEntity<List<CardDTO>> getCards(){
         String userMail = SecurityContextHolder.getContext().getAuthentication().getName();
-        Client client = clientRepository.findByEmail(userMail);
+        Client client = clientService.getClientByEmail(userMail);
 
         Set<Card> cards = client.getCards();
 
