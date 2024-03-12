@@ -18,6 +18,7 @@ public class Client {
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     Set<Card> cards = new HashSet<>();
     private String password;
+    @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.CLIENT;
 
     public Client() {

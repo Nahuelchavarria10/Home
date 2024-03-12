@@ -8,4 +8,8 @@ public class UtilService {
         return (int) ((Math.random() * (max - min + 1)) + min);
     }
 
+    public String generateCVV() {
+        int randomNumber = getRandomNumber(0, 999);
+        return String.format("%03d", randomNumber);
+    }
 }
