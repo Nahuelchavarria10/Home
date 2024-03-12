@@ -6,6 +6,7 @@ import com.mindhub.homebanking.models.TransactionType;
 import java.time.LocalDateTime;
 
 public class TransactionDTO {
+
     private Long id;
     private TransactionType type;
     private double amount;

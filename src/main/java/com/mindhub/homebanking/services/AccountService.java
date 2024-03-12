@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.Client;
 import java.util.List;
 
 public interface AccountService {
+
     List<Account> getAllAccounts();
     List<AccountDTO> getAllAccountsDTO();
     Account getAccountById(Long id);

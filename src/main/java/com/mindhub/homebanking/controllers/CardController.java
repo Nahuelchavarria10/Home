@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
+
     @Autowired
     private CardServiceManager cardServiceManager;
 

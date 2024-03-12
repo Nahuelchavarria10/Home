@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 public class LoanServiceManager {
+
     @Autowired
     private LoanService loanService;
 

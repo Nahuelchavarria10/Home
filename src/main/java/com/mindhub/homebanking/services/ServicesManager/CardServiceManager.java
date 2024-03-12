@@ -24,6 +24,7 @@ import java.util.Set;
 
 @Service
 public class CardServiceManager {
+
     @Autowired
     private CardService cardService;
 
@@ -77,7 +78,7 @@ public class CardServiceManager {
             }
 
             String cardNumberRandom = utilService.getRandomNumber(1000,9999) + "-" + utilService.getRandomNumber(1000,9999) + "-" + utilService.getRandomNumber(1000,9999) + "-" + utilService.getRandomNumber(1000,9999);
-            String cvvRandom = utilService.generateCVV();
+            String cvvRandom = utilService.generateCvv();
 
             Card card = new Card(client,CardType.valueOf(cardApplyDTO.cardType()), CardColor.valueOf(cardApplyDTO.cardColor()),cardNumberRandom,cvvRandom, LocalDate.now(),LocalDate.now().plusYears(5));
             client.addCard(card);

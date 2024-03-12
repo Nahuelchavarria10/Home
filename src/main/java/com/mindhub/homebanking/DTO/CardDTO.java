@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.CardColor;
 import java.time.LocalDate;
 
 public class CardDTO {
+
     private Long id;
     private String cardHolder;
     private CardType type;

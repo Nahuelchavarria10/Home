@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 public class ClientServiceManager {
+
     @Autowired
     ClientService clientService;
 

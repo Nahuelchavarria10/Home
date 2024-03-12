@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ClientLoanServiceImpl implements ClientLoanService {
+
     @Autowired
     private ClientLoanRepository clientLoanRepository;
     @Override

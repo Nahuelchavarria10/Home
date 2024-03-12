@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtilService {
+
     private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
     public static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60; // 1 HORA
     public Claims extractAllClaims(String token) {

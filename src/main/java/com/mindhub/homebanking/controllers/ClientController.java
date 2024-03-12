@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clients")
 public class ClientController {
+
     @Autowired
     private ClientServiceManager clientServiceManager;
 

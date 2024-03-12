@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionController {
+
     @Autowired
     private TransactionServiceManager transactionServiceManager;
 
