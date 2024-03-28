@@ -35,8 +35,8 @@ public class WebConfiguration {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
                 .authorizeHttpRequests(authorize->authorize
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/h2-console/**").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
